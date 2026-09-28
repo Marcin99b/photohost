@@ -6,13 +6,15 @@ import (
 	"net/http"
 	"os"
 	"path"
+
+	"github.com/google/uuid"
 )
 
 func main() {
 	pwd, err := os.Getwd()
 	panicOnError(err)
 
-	photosPath := path.Join(pwd, "input")
+	photosPath := path.Join(pwd, "hosted")
 	fmt.Println(photosPath)
 
 	dir, err := os.ReadDir(photosPath)
@@ -32,7 +34,13 @@ func main() {
 	})
 
 	http.HandleFunc("POST /file", func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "Test\n")
+		b, _ := io.ReadAll(r.Body)
+
+		id := uuid.NewString()
+		p := path.Join(photosPath, id)
+		os.WriteFile(p, b, 0644)
+
+		io.WriteString(w, fmt.Sprintf("ID: http://localhost:8080/file/%s\n", id))
 	})
 
 	http.ListenAndServe(":8080", nil)
