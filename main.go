@@ -12,12 +12,12 @@ import (
 )
 
 type FileCreatedResponse struct {
-	id  string `json:"id"`
-	url string `json:"url"`
+	Id  string `json:"id"`
+	Url string `json:"url"`
 }
 
 func newFileCreatedResponse(id string, url string) *FileCreatedResponse {
-	r := FileCreatedResponse{id: id, url: url}
+	r := FileCreatedResponse{Id: id, Url: url}
 	return &r
 }
 
