@@ -22,7 +22,10 @@ func newFileCreatedResponse(id string, url string) *FileCreatedResponse {
 }
 
 func main() {
-	port := 2137
+	httpPort := os.Getenv("PORT")
+	if httpPort == "" {
+		httpPort = "2137"
+	}
 
 	pwd, err := os.Getwd()
 	panicOnError(err)
@@ -44,14 +47,14 @@ func main() {
 		p := path.Join(photosPath, id)
 		os.WriteFile(p, b, 0644)
 
-		resp := newFileCreatedResponse(id, fmt.Sprintf("http://localhost:%d/file/%s", port, id))
+		resp := newFileCreatedResponse(id, fmt.Sprintf("http://localhost:%s/file/%s", httpPort, id))
 		bytes, _ := json.Marshal(resp)
 
 		w.Write(bytes)
 	})
 
-	fmt.Printf("Host on localhost:%d\n\n", port)
-	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	fmt.Printf("Host on localhost:%s\n\n", httpPort)
+	http.ListenAndServe(fmt.Sprintf(":%s", httpPort), nil)
 }
 
 func panicOnError(err error) {
