@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -9,6 +10,16 @@ import (
 
 	"github.com/google/uuid"
 )
+
+type FileCreatedResponse struct {
+	id  string `json:"id"`
+	url string `json:"url"`
+}
+
+func newFileCreatedResponse(id string, url string) *FileCreatedResponse {
+	r := FileCreatedResponse{id: id, url: url}
+	return &r
+}
 
 func main() {
 	pwd, err := os.Getwd()
@@ -31,7 +42,10 @@ func main() {
 		p := path.Join(photosPath, id)
 		os.WriteFile(p, b, 0644)
 
-		io.WriteString(w, fmt.Sprintf("ID: http://localhost:8080/file/%s\n", id))
+		resp := newFileCreatedResponse(id, fmt.Sprintf("http://localhost:8080/file/%s", id))
+		bytes, _ := json.Marshal(resp)
+
+		w.Write(bytes)
 	})
 
 	http.ListenAndServe(":8080", nil)
