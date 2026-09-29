@@ -33,7 +33,8 @@ func main() {
 
 	http.HandleFunc("GET /file/{id}", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(r.PathValue("id"))
-		filePath := path.Join(photosPath, r.PathValue("id"))
+		id, _ := uuid.Parse(r.PathValue("id"))
+		filePath := path.Join(photosPath, id.String())
 		fmt.Println(filePath)
 		bytes, _ := os.ReadFile(filePath)
 		fmt.Println(len(bytes))
