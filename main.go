@@ -13,16 +13,7 @@ import (
 func main() {
 	pwd, err := os.Getwd()
 	panicOnError(err)
-
 	photosPath := path.Join(pwd, "hosted")
-	fmt.Println(photosPath)
-
-	dir, err := os.ReadDir(photosPath)
-	panicOnError(err)
-
-	for _, file := range dir {
-		fmt.Println(file.Name())
-	}
 
 	http.HandleFunc("GET /file/{id}", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(r.PathValue("id"))
